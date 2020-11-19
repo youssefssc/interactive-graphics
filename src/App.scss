@@ -1,0 +1,31 @@
+.App {
+  margin: 1rem;
+}
+
+.container {
+  display: flex;
+}
+
+nav {
+  padding: 1rem;
+  margin: 1rem 2rem 4rem 2rem;
+  border-bottom: 1px solid #222;
+}
+
+h2 {
+  margin: 3rem 1rem;
+}
+
+a {
+  margin: 0.5rem;
+  color: #222;
+  text-decoration: none;
+}
+a:hover {
+  font-weight: 600;
+}
+section {
+  ul li {
+    margin-bottom: 1rem;
+  }
+}
