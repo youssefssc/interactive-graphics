@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// import {useInterval} from './../../hooks/useInterval';
 import { useSpring, animated } from 'react-spring';
 
 import { mockData } from './mockData';
@@ -23,7 +22,6 @@ const ZoomableStack = () => {
     const zoomObj = Object.fromEntries(
       Object.entries(mockData).filter(([key, value]) => value < zoomValue)
     );
-    // console.log(zoomObj);
     setVisibleStack(zoomObj);
     return zoomObj;
   };
@@ -38,15 +36,10 @@ const ZoomableStack = () => {
     const findSum = (accumulator, currentValue) => accumulator + currentValue;
 
     const sumVisibleValues = visibleValues.reduce(findSum);
-    // console.log(sumVisibleValues);
     height = (value / sumVisibleValues) * STACK_HEIGHT;
 
     return height;
   };
-
-  //  useInterval(() => {
-  // setVisibleStack(zoomToLevel(Math.random() * 100));
-  //  }, 1000)
 
   return (
     <div className='container'>
@@ -94,7 +87,6 @@ const AnimatedBar = ({ title, value, index, height, isShowing }) => {
     config: {
       duration: 300,
     },
-    //  display: isShowing ? 'block' : 'none',
     opacity: isShowing ? 1 : 0,
     height: isShowing ? height : 0,
     backgroundColor:
@@ -102,20 +94,10 @@ const AnimatedBar = ({ title, value, index, height, isShowing }) => {
     width: 400,
   });
 
-  /* 
-    // <animated.div {...style}
-    //   fill={
-    //     !isShowing          ? "#222333" :
-    //     !wasShowing.current ? "#ff0000" :
-    //                           "#0000ff"
-    // }
-    > */
-
   return (
     <animated.div className='box' style={props}>
       {height > 30 && (
         <span>
-          {' '}
           <b>{title}</b> {value}
         </span>
       )}
