@@ -13,6 +13,9 @@ const Home = () => {
         <li>
           <Link to='/zoomableStack'>Zoomable Stack</Link>
         </li>
+         <li>
+          <Link to='/barChart'>Bar Chart D3</Link>
+        </li>
       </ul>
     </section>
   );

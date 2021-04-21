@@ -5,6 +5,8 @@ import Home from './diagrams/Home';
 import AnimatedCircles from './diagrams/AnimatedCircles';
 // import Circles from './diagrams/Circles';
 import ZoomableStack from './diagrams/ZoomableStack';
+import BarChartD3 from './diagrams/BarChartD3';
+
 
 import './App.scss';
 
@@ -26,6 +28,12 @@ const App = () => {
             <>
               <Nav />
               <ZoomableStack />
+            </>
+          </Route>
+          <Route path='/barChart'>
+            <>
+              <Nav />
+              <BarChartD3 />
             </>
           </Route>
         </Switch>
