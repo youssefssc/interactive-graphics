@@ -6,7 +6,7 @@ import AnimatedCircles from './diagrams/AnimatedCircles';
 // import Circles from './diagrams/Circles';
 import ZoomableStack from './diagrams/ZoomableStack';
 import BarChartD3 from './diagrams/BarChartD3';
-
+import Contour from './diagrams/Contour';
 
 import './App.scss';
 
@@ -36,6 +36,13 @@ const App = () => {
               <BarChartD3 />
             </>
           </Route>
+          <Route path='/contour'>
+            <>
+              <Nav />
+              <Contour />
+            </>
+          </Route>
+
         </Switch>
       </div>
     </Router>
