@@ -5,6 +5,7 @@ import Home from './diagrams/Home';
 import AnimatedCircles from './diagrams/AnimatedCircles';
 // import Circles from './diagrams/Circles';
 import ZoomableStack from './diagrams/ZoomableStack';
+import Connections from './diagrams/Connections';
 
 import './App.scss';
 
@@ -26,6 +27,12 @@ const App = () => {
             <>
               <Nav />
               <ZoomableStack />
+            </>
+          </Route>
+          <Route path='/connections'>
+            <>
+              <Nav />
+              <Connections />
             </>
           </Route>
         </Switch>

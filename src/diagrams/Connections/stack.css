@@ -1,0 +1,25 @@
+.zoom {
+  width: 20%;
+  text-align: center;
+}
+.stack {
+  width: 80%;
+  text-align: center;
+}
+.box {
+  background-color: '#5D5D5D';
+  border-width: 1px 0px;
+  border-style: solid;
+  padding-left: 10px;
+
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+
+.input-range {
+  transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  height: 150px;
+}

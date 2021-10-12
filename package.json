@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@securityscorecard/design-system": "^1.0.0-alpha.113",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "@securityscorecard/design-system": "^1.0.0-alpha.113",
     "d3": "^6.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -14,6 +14,7 @@
     "react-scripts": "4.0.0",
     "react-spring": "^8.0.27",
     "sass": "^1.29.0",
+    "styled-components": "^5.3.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

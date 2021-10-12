@@ -8,10 +8,13 @@ const Home = () => {
 
       <ul>
         <li>
-          <Link to='/animatedCircles'> Animated Circles</Link>
+          <Link to='/connections'>Connections</Link>
         </li>
         <li>
           <Link to='/zoomableStack'>Zoomable Stack</Link>
+        </li>
+        <li>
+          <Link to='/animatedCircles'> Animated Circles</Link>
         </li>
       </ul>
     </section>

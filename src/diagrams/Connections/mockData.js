@@ -1,0 +1,18 @@
+export const mockData = {
+  'WHOIS Records': 1000,
+  'CDN Assets': 800,
+  'SSL Certs': 700,
+  'DNS Lookups': 500,
+  'Small Cat 1': 300,
+  'Small Cat 2': 200,
+  'Small Cat 3': 100,
+  'Smallest Cat 0': 50,
+  'Smallest Cat 1': 50,
+  'Smallest Cat 2': 50,
+  'Smallest Cat 3': 50,
+  'Smallest Cat 4': 50,
+  'Smallest Cat 5': 50,
+  'Smallest Cat 6': 50,
+  'Smallest Cat 7': 50,
+  'Smallest Cat 8': 50,
+};
