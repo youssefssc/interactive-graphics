@@ -1678,10 +1678,10 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@securityscorecard/design-system@^1.0.0-alpha.113":
-  version "1.0.0-alpha.115"
-  resolved "https://npm.pkg.github.com/download/@securityscorecard/design-system/1.0.0-alpha.115/6f60c45766d7e8b230716f34dba310ff233278291441ccb20b83f90f0fca3ca0#c612503309d70cf28244dd8e97c338ae04bdbbe8"
-  integrity sha512-bHPEg57r4gjwv6Hp04ky3BYSOlomRGqDb6d6ipvS/qraPa1kppo4laP8KUX9zRfhipLKqoN68T3irLVayl0aCA==
+"@securityscorecard/design-system@^1.0.0-alpha.115":
+  version "1.0.0-alpha.116"
+  resolved "https://npm.pkg.github.com/download/@securityscorecard/design-system/1.0.0-alpha.116/9f582e8ff06eaab5485887311f5c8fa05993b12d0c7d298fb072acc72aa0ccad#e8eb6a13634623f571fb7d47f1d879e9e478751f"
+  integrity sha512-GtPwWglSsAXtzndu/5lJRsjJnm1KCAsWePK4jt7tfLFbHdL+ww5Cgofq8CN0MdM6z2RAuh/0OSqoSOEZn36t/w==
   dependencies:
     "@dnd-kit/core" "^2.1.2"
     "@dnd-kit/modifiers" "^1.0.5"

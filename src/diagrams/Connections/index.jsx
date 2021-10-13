@@ -1,192 +1,101 @@
-import React from 'react';
-import {HexGrade} from '@securityscorecard/design-system';
+import React, { useState } from 'react';
+import {
+  HexGrade,
+  Center,
+  Stack,
+  Grid,
+  Inline,
+  Button,
+  Text,
+  Heading,
+} from '@securityscorecard/design-system';
+import styled from 'styled-components';
 // import { useSpring, animated } from 'react-spring';
 
-// import { mockData } from './mockData';
+import { mockData } from './mockData';
 
+const data = mockData;
 
-import './stack.css';
-
-// const STACK_HEIGHT = 204;
-// const MIN_BAR_HEIGHT = 10;
-// const MAX_BAR_HEIGHT = 180;
-// const data= mockData;
-
-const Connections = () => {  
-//  const initalHeights = Object.fromEntries(
-//     Object.entries(data).map(([key]) => [key, 0]),
-//   );
-
-//   const [visibleStack, setVisibleStack] = useState(data);
-//   const [barHeights, setBarHeights] = useState(initalHeights);
-//   const [zoomLevel, setZoomLevel] = useState(100);
-//   const [areBarsExpanded, setAreBarsExpanded] = useState(false);
-
-//   useEffect(() => {
-//     setVisibleStack(data);
-//     setZoomLevel(100);
-//     calculateBarHeights(data);
-//   }, [data]);
-
-//   useEffect(() => {
-//     zoomToLevel(zoomLevel);
-//     if (zoomLevel > 50) {
-//       setAreBarsExpanded(false);
-//     }
-//   }, [zoomLevel]);
-
-//   useEffect(() => {
-//     if (zoomLevel <= 50) {
-//       calculateBarHeights(visibleStack);
-//     }
-//   }, [areBarsExpanded]);
-
-//   // const total = Object.values(data).reduce((acc, value) => acc + value, 0);
-//   const minData = Math.min(...Object.values(data));
-//   const maxData = Math.max(...Object.values(data));
-//   // const meanData = (minData + maxData) / 2;
-
-//   const zoomToLevel = level => {
-//     const zoomValue = (level / 100) * maxData + minData;
-//     const zoomObject = Object.fromEntries(
-//       Object.entries(data).filter(([, value]) => value < zoomValue),
-//     );
-//     setVisibleStack(zoomObject);
-//     calculateBarHeights(zoomObject);
-//     return zoomObject;
-//   };
-
-//   const calculateBarHeights = barsObject => {
-//     setBarHeights(
-//       Object.fromEntries(
-//         Object.entries(barsObject).map(([key, value]) => [
-//           key,
-//           remapHeight(key, value),
-//         ]),
-//       ),
-//     );
-//   };
-
-//   const remapHeight = (key, value) => {
-//     let height = MIN_BAR_HEIGHT;
-
-//     const visibleValues = Object.values(visibleStack);
-//     const findSum = (accumulator, currentValue) => accumulator + currentValue;
-//     const sumVisibleValues = visibleValues.reduce(findSum);
-
-//     height = (value / sumVisibleValues) * STACK_HEIGHT;
-
-//     if (
-//       areBarsExpanded &&
-//       Object.keys(visibleStack).includes(key) &&
-//       height < 3 * MIN_BAR_HEIGHT
-//     ) {
-//       height = 3 * MIN_BAR_HEIGHT;
-//     }
-
-//     if (height > MAX_BAR_HEIGHT) {
-//       height = MAX_BAR_HEIGHT;
-//     }
-
-//     return height;
-//   };
-
-  return (
-    <div className='container'>
-      <>
-  <HexGrade
-    grade="F"
-    size={16}
-    variant="solid"
-  />
-  <HexGrade
-    grade="D"
-    size={32}
-    variant="solid"
-  />
-  <HexGrade
-    grade="C"
-    size={64}
-    variant="solid"
-  />
-  <HexGrade
-    grade="B"
-    size={96}
-    variant="solid"
-  />
-  <HexGrade
-    grade="A"
-    size={128}
-    variant="solid"
-  />
-</>
-      {/* <div className='zoom'>
-        <input
-          className='input-range'
-          orient='vertical'
-          type='range'
-          step='1'
-          min='1'
-          max='100'
-         value={zoomLevel}
-        onChange={event => setZoomLevel(Number(event.target.value))}
-        />
-        <p>
-          zoom level
-          <br />
-          {100 - zoomLevel}
-        </p>
-        <button
-           onClick={() => setAreBarsExpanded(!areBarsExpanded)}
-            disabled={zoomLevel > 50}
-          >
-            {areBarsExpanded ? 'Collpase' : 'Expand'}
-        </button>
-      </div>
-      <div className='stack'>
-        {Object.entries(mockData).map(([key, value], index) => (
-          <AnimatedBar
-            key={key}
-            index={index}
-            value={value}
-            title={key}
-            height={barHeights[key]}
-            isShowing={Object.keys(visibleStack).includes(key)}
-          />
-        ))}
-      </div> */}
-    </div>
-  );
+const DEGREE_NAMES = {
+  1: '1st',
+  2: '2nd',
+  3: '3rd',
 };
 
-// const AnimatedBar = ({ title, value, index, height, isShowing }) => {
-//   const wasShowing = useRef(false);
+const GradeContainer = styled.div`
+  padding: 1rem;
+`;
 
-//   useEffect(() => {
-//     wasShowing.current = isShowing;
-//   }, [isShowing]);
+const Connections = () => {
+  const [proximity, setProximity] = useState(1);
 
-//   const props = useSpring({
-//     config: {
-//       duration: 300,
-//     },
-//    opacity: isShowing ? 1 : 0,
-//     height: isShowing ? height : 0,
-//     borderColor: height > 5 ? '#FFFFFF' : '#5D5D5D',
-//     backgroundColor:
-//       height < 30 ? '#5D5D5D' : index % 2 === 0 ? '#CDD6E2' : '#B1C3DB',
-//     width: 306,
-//   });
+  const sumValues = (obj) => Object.values(obj).reduce((a, b) => a + b);
 
-//   return (
-//     <animated.div className='box' style={props}>
-//       {height >= 30 && (
-//         <span>
-//           <b>{title}</b> {value}
-//         </span>
-//       )}
-//     </animated.div>
-//   );
-// };
+  const connectionLevels = Object.keys(data);
+  const allGrades = Object.keys(data['1']);
+  const connectionTotals = Object.fromEntries(
+    connectionLevels.map((level) => [level, sumValues(data[level])]),
+  );
+
+  const mapGradeSize = (value, inMin, inMax, outMin, outMax) =>
+    ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+
+  // const gradeSizes = Object.fromEntries(
+  //   connectionLevels.map((level) => [level, sumValues(data[level])]),
+  // );
+
+  return (
+    <Center maxWidth={1000}>
+      <Stack gap="md" justify="flex-start">
+        <Inline gap="md">
+          <Text size="lg">Proximity</Text>
+          {connectionLevels.map((level) => {
+            return (
+              <Button
+                size="lg"
+                color="primary"
+                variant="text"
+                onClick={() => {
+                  setProximity(level);
+                }}
+              >
+                &nbsp;&nbsp;{DEGREE_NAMES[level]}
+              </Button>
+            );
+          })}
+        </Inline>
+
+        <Center areChildrenCentered maxWidth={1000}>
+          <Text size="sm">{DEGREE_NAMES[proximity]} Degree</Text>
+          <Heading size="h0">{connectionTotals[proximity]}</Heading>
+
+          <Grid align="center" gap="xl" cols={5}>
+            {allGrades.map((grade) => {
+              return (
+                <Stack justify="center">
+                  <GradeContainer>
+                    <HexGrade
+                      grade={grade}
+                      variant="solid"
+                      size={mapGradeSize(
+                        data[proximity][grade],
+                        Math.min(...Object.values(data[proximity])),
+                        Math.max(...Object.values(data[proximity])),
+                        32,
+                        128,
+                      )}
+                    />
+                  </GradeContainer>
+                  <br />
+                  <Text size="sm">{data[proximity][grade]}</Text>
+                </Stack>
+              );
+            })}
+          </Grid>
+        </Center>
+      </Stack>
+    </Center>
+  );
+};
 
 export default Connections;
