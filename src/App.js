@@ -6,33 +6,47 @@ import AnimatedCircles from './diagrams/AnimatedCircles';
 // import Circles from './diagrams/Circles';
 import ZoomableStack from './diagrams/ZoomableStack';
 import Connections from './diagrams/Connections';
+import BarChartD3 from './diagrams/BarChartD3';
+import Contour from './diagrams/Contour';
 
 import './App.scss';
 
 const App = () => {
   return (
     <Router>
-      <div className='App'>
+      <div className="App">
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <Home />
           </Route>
-          <Route path='/animatedCircles'>
+          <Route path="/animatedCircles">
             <>
               <Nav />
               <AnimatedCircles />
             </>
           </Route>
-          <Route path='/zoomableStack'>
+          <Route path="/zoomableStack">
             <>
               <Nav />
               <ZoomableStack />
             </>
           </Route>
-          <Route path='/connections'>
+          <Route path="/connections">
             <>
               <Nav />
               <Connections />
+            </>
+          </Route>
+          <Route path="/barChart">
+            <>
+              <Nav />
+              <BarChartD3 />
+            </>
+          </Route>
+          <Route path="/contour">
+            <>
+              <Nav />
+              <Contour />
             </>
           </Route>
         </Switch>
@@ -44,7 +58,7 @@ const App = () => {
 const Nav = () => {
   return (
     <nav>
-      <Link to='/'> &larr; Back</Link>
+      <Link to="/"> &larr; Back</Link>
     </nav>
   );
 };
