@@ -29,3 +29,22 @@ section {
     margin-bottom: 1rem;
   }
 }
+
+.diagram-container{
+  margin: 2rem 4rem ;
+  h2 {
+    margin: 2rem 0;
+  }
+}
+
+button{
+  background-color: #fff;
+  border: 1px solid #222;
+  color: #222;
+  padding: 0.5rem 1.5rem;
+  margin-bottom: 1rem;
+  &:hover{
+    color: #fff;
+    background-color: #222;
+  }
+}
