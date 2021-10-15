@@ -48,7 +48,7 @@ const Connections = () => {
     <Center maxWidth={1000}>
       <Stack gap="md" justify="flex-start">
         <Inline gap="md">
-          <Text size="lg">Proximity</Text>
+          <Text size="sm">Proximity</Text>
           {connectionLevels.map((level) => {
             return (
               <Button
@@ -59,7 +59,7 @@ const Connections = () => {
                   setProximity(level);
                 }}
               >
-                &nbsp;&nbsp;{DEGREE_NAMES[level]}
+                &nbsp;&nbsp;{DEGREE_NAMES[level]}&nbsp;&nbsp;
               </Button>
             );
           })}

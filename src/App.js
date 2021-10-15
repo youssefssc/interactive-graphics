@@ -6,6 +6,7 @@ import AnimatedCircles from './diagrams/AnimatedCircles';
 // import Circles from './diagrams/Circles';
 import ZoomableStack from './diagrams/ZoomableStack';
 import Connections from './diagrams/Connections';
+import Donut from './diagrams/Donut';
 import BarChartD3 from './diagrams/BarChartD3';
 import Contour from './diagrams/Contour';
 
@@ -19,6 +20,18 @@ const App = () => {
           <Route exact path="/">
             <Home />
           </Route>
+          <Route path="/connections">
+            <>
+              <Nav />
+              <Connections />
+            </>
+          </Route>
+          <Route path="/donut">
+            <>
+              <Nav />
+              <Donut />
+            </>
+          </Route>
           <Route path="/animatedCircles">
             <>
               <Nav />
@@ -31,12 +44,7 @@ const App = () => {
               <ZoomableStack />
             </>
           </Route>
-          <Route path="/connections">
-            <>
-              <Nav />
-              <Connections />
-            </>
-          </Route>
+
           <Route path="/barChart">
             <>
               <Nav />
