@@ -7,11 +7,15 @@ const Home = () => {
       <h2> Interactive Graphics </h2>
       <ul>
         <li>
-          <Link to="/connections">Connections</Link>
-        </li>
-        <li>
           <Link to="/donut">Half Donut</Link>
         </li>
+        <li>
+          <Link to="/donut">Double Half Donuts</Link>
+        </li>
+        <li>
+          <Link to="/connections">Connections Sizes</Link>
+        </li>
+
         <li>
           <Link to="/zoomableStack">Zoomable Stack</Link>
         </li>

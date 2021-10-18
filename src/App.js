@@ -7,6 +7,7 @@ import AnimatedCircles from './diagrams/AnimatedCircles';
 import ZoomableStack from './diagrams/ZoomableStack';
 import Connections from './diagrams/Connections';
 import Donut from './diagrams/Donut';
+import DoubleDonut from './diagrams/Donut/DoubleDonut';
 import BarChartD3 from './diagrams/BarChartD3';
 import Contour from './diagrams/Contour';
 
@@ -24,6 +25,12 @@ const App = () => {
             <>
               <Nav />
               <Connections />
+            </>
+          </Route>
+          <Route path="/2donut">
+            <>
+              <Nav />
+              <DoubleDonut />
             </>
           </Route>
           <Route path="/donut">
