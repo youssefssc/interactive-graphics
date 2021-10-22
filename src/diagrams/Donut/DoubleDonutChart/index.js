@@ -1,5 +1,13 @@
 import * as d3 from 'd3';
-import { getColor } from '@securityscorecard/design-system';
+import {
+  Paragraph,
+  HexGrade,
+  Text,
+  Inline,
+  Button,
+  pxToRem,
+} from '@securityscorecard/design-system';
+import styled from 'styled-components';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
@@ -15,19 +23,58 @@ const START_ANGLE = 0;
 const END_ANGLE = -Math.PI;
 const CORNER_RADIUS = 0.5;
 const PAD_ANGLE = 0.007;
-
 const ARC_EXPAND = 2;
+const ANIMATION_TIME = 500;
+
+const TooltipContainer = styled.div`
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+`;
+
+const TooltipPopup = styled.div`
+  width: 120px;
+  height: 50px;
+  padding: 16px;
+  background: #fff;
+  filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.25));
+
+  // transform: translateY(50%);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: -0.5rem;
+    width: 0.5rem;
+    height: 100%;
+  }
+
+  &::after {
+    transform: translateY(-50%);
+    top: 50%;
+    left: -5px;
+    border-width: 5px 5px 5px 0px;
+    border-color: transparent rgb(255, 255, 255) transparent transparent;
+    border-style: solid;
+    content: '';
+    position: absolute;
+    width: 0px;
+    height: 0px;
+  }
+`;
 
 function DoubleDonutChart({ width, height, data }) {
   const ref = useRef();
-  const [clicked, setClicked] = useState({ grade: '', level: 0 });
+  const [selected, setSelected] = useState([]);
+  const [hovered, setHovered] = useState({ grade: 'A', level: 0, value: 0 });
+  const [activeLevel, setActiveLevel] = useState(1);
 
   const dataLevel1 = data.filter((entry) => entry.level === 1);
   const dataLevel2 = data.filter((entry) => entry.level === 2);
 
   const margin = 15;
-  const center = Math.min(width, height) / 2;
-  const radius = center - margin;
+  // const center = Math.min(width, height) / 2;
+  const radius = Math.min(width, height) / 2 - margin;
 
   const innerR1 = 0.5 * radius;
   const outerR1 = 0.7 * radius;
@@ -45,32 +92,26 @@ function DoubleDonutChart({ width, height, data }) {
 
   const arcs = [arcGenerator(innerR1, outerR1), arcGenerator(innerR2, outerR2)];
 
-  const arcsHover = [
-    arcGenerator(innerR1 - ARC_EXPAND, outerR1 + ARC_EXPAND),
-    arcGenerator(innerR2 - ARC_EXPAND, outerR2 + ARC_EXPAND),
-  ];
   const arcsActive = [
-    arcGenerator(innerR1 - 2 * ARC_EXPAND, outerR1 + 2 * ARC_EXPAND),
-    arcGenerator(innerR2 - 2 * ARC_EXPAND, outerR2 + 2 * ARC_EXPAND),
+    arcGenerator(innerR1 - 4 * ARC_EXPAND, outerR1),
+    arcGenerator(innerR2 - 4 * ARC_EXPAND, outerR2),
   ];
 
   const draw = useCallback(() => {
     const svgContainer = d3.select(ref.current);
 
-    // const svgContainer = d3.select(ref.current).node();
-    // const width = svgContainer.getBoundingClientRect().width;
-    // const height = width;
+    // Clear SVG
+    svgContainer.select('svg').transition().duration(100).remove();
 
-    svgContainer.select('svg').transition().duration(300).remove();
     // Create SVG
     const svg = svgContainer
       .append('svg')
       .attr('width', '100%')
       .attr('height', '100%')
-      .attr('viewBox', '0 0 ' + width + ' ' + width)
-      .attr('preserveAspectRatio', 'xMinYMin')
+      .attr('viewBox', [0, 0, width, height])
+      // .attr('preserveAspectRatio', 'xMinYMin')
       .append('g')
-      .attr('transform', `translate(${center}, ${center})`);
+      .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
     const pieGenerator = d3
       .pie()
@@ -82,18 +123,17 @@ function DoubleDonutChart({ width, height, data }) {
     // Donut
     const arcs1 = svg.selectAll().data(pieGenerator(dataLevel1)).enter();
 
-    let activeArc = { level: 0, grade: '' };
-
     arcs1
       .append('path')
       .attr('d', arcs[0])
       .attr('class', 'arc-level-1')
       .attr('fill', (d) => colors[d.data.grade])
+      .attr('opacity', activeLevel === 1 ? 1 : 0.7)
       .on('mouseover', handleMouseOver)
       .on('mouseout', handleMouseOut)
       .on('click', handleOnClickArc)
       .transition()
-      .duration(700)
+      .duration(ANIMATION_TIME)
       .attrTween('d', function (d) {
         const i = d3.interpolate(d.startAngle, d.endAngle);
         return function (t) {
@@ -110,12 +150,12 @@ function DoubleDonutChart({ width, height, data }) {
       .attr('d', arcs[1])
       .attr('class', 'arc-level-2')
       .attr('fill', (d) => colors[d.data.grade])
-      .attr('opacity', 0.75)
+      .attr('opacity', activeLevel === 2 ? 1 : 0.7)
       .on('mouseover', handleMouseOver)
       .on('mouseout', handleMouseOut)
       .on('click', handleOnClickArc)
       .transition()
-      .duration(700)
+      .duration(ANIMATION_TIME)
       .attrTween('d', function (d) {
         const i = d3.interpolate(d.startAngle, d.endAngle);
         return function (t) {
@@ -124,33 +164,68 @@ function DoubleDonutChart({ width, height, data }) {
         };
       });
 
+    // Define the div for the tooltip
+    const tooltipDiv = d3.select('.tooltip-container');
+    const tooltipHover = svgContainer.select('.tooltip-hover');
+
+    setSelected([]);
+    let selectedArcs = selected;
+
     // Interaction Functions
 
     function handleMouseOver(d, i) {
-      if (
-        activeArc.grade !== i.data.grade ||
-        activeArc.level !== i.data.level
-      ) {
-        d3.select(this).attr('d', arcsHover[i.data.level - 1]);
+      if (activeLevel === i.data.level) {
+        const currentArcActive = arcsActive[i.data.level - 1];
+        d3.select(this).attr('d', currentArcActive);
+        setHovered({
+          grade: i.data.grade,
+          level: i.data.level,
+          value: i.data.value,
+        });
+
+        const [x, y] = currentArcActive.centroid(i);
+
+        const tooltipX = width + x - 100;
+        const tooltipY = height + y + 100;
+        // console.log(tooltipX);
+        tooltipDiv.style('left', tooltipX + 'px').style('top', tooltipY + 'px');
+        tooltipDiv.transition().duration(200).style('opacity', 1);
       }
     }
 
     function handleMouseOut(d, i) {
-      if (
-        activeArc.grade !== i.data.grade ||
-        activeArc.level !== i.data.level
-      ) {
-        d3.select(this).attr('d', arcs[i.data.level - 1]);
+      if (activeLevel === i.data.level) {
+        const isArcSelected = selectedArcs.find(
+          (arc) => arc.grade === i.data.grade && arc.level === i.data.level,
+        );
+        if (!isArcSelected) {
+          d3.select(this).attr('d', arcs[i.data.level - 1]);
+        }
+        tooltipDiv.transition().duration(200).style('opacity', 0);
       }
     }
 
     function handleOnClickArc(d, i) {
-      d3.selectAll('.arc-level-1').attr('d', arcs[0]);
-      d3.selectAll('.arc-level-2').attr('d', arcs[1]);
-
-      d3.select(this).attr('d', arcsActive[i.data.level - 1]);
-      activeArc = { grade: i.data.grade, level: i.data.level };
-      setClicked(activeArc);
+      // d3.selectAll('.arc-level-1').attr('d', arcs[0]);
+      // d3.selectAll('.arc-level-2').attr('d', arcs[1]);
+      if (activeLevel === i.data.level) {
+        d3.select(this).attr('d', arcsActive[i.data.level - 1]);
+        const isArcSelected = selectedArcs.find(
+          (arc) => arc.grade === i.data.grade && arc.level === i.data.level,
+        );
+        if (isArcSelected) {
+          selectedArcs = selectedArcs.filter(
+            (arc) => arc.grade !== i.data.grade || arc.level !== i.data.level,
+          );
+          setSelected(selectedArcs);
+        } else {
+          selectedArcs = [
+            ...selectedArcs,
+            { grade: i.data.grade, level: i.data.level },
+          ];
+          setSelected(selectedArcs);
+        }
+      }
     }
 
     //Labels
@@ -162,16 +237,14 @@ function DoubleDonutChart({ width, height, data }) {
         return `translate(${x}, ${y})`;
       })
       .append('text')
-      .text((d) => {
-        return d.data.value;
-      })
+      .text((d) => (d.data.percent > 5 ? d.data.percent + '%' : ''))
       .attr('y', 6)
       .style('fill', '#fff')
       .style('text-anchor', 'middle')
       .style('font-size', 0)
       .transition()
       .duration(700)
-      .style('font-size', '10px');
+      .style('font-size', '8px');
 
     arcs2
       .append('g')
@@ -180,22 +253,19 @@ function DoubleDonutChart({ width, height, data }) {
         return `translate(${x}, ${y})`;
       })
       .append('text')
-      .text((d) => {
-        return d.data.value;
-      })
+      .text((d) => (d.data.percent > 5 ? d.data.percent + '%' : ''))
       .attr('y', 6)
       .style('fill', '#fff')
       .style('text-anchor', 'middle')
       .style('font-size', 0)
       .transition()
       .duration(700)
-      .style('font-size', '10px');
-  }, [data, height]);
+      .style('font-size', '8px');
+  }, [data, height, activeLevel]);
 
   useEffect(() => {
     const svg = d3.select(ref.current);
     svg.attr('width', width).attr('height', height);
-    // .style("border", "1px solid black")
   }, [width, height]);
 
   useEffect(() => {
@@ -204,10 +274,42 @@ function DoubleDonutChart({ width, height, data }) {
 
   return (
     <>
-      <p>
-        Clicked: {` `} <b>{JSON.stringify(clicked)}</b>
-      </p>
+      <Inline gap="md">
+        <Button
+          variant="text"
+          onClick={() => {
+            setSelected([]);
+            setActiveLevel(1);
+          }}
+        >
+          &nbsp; 3rd Party &nbsp;
+        </Button>
+        <Button
+          variant="text"
+          onClick={() => {
+            setSelected([]);
+            setActiveLevel(2);
+          }}
+        >
+          &nbsp; 4th Party &nbsp;
+        </Button>
+        <p>
+          &nbsp;&nbsp;&nbsp; Selected: {` `}
+          <b>{selected.map((arc) => arc.level + arc.grade + ' ')}</b>
+        </p>
+      </Inline>
+
       <div ref={ref}></div>
+      <TooltipContainer className="tooltip-container">
+        <TooltipPopup>
+          <>
+            <HexGrade grade={hovered.grade || null} variant="solid" size={24} />
+            <Paragraph size="md" isBold margin={{ vertical: 0.5 }}>
+              <Text isBold> {hovered.value} Companies </Text>
+            </Paragraph>
+          </>
+        </TooltipPopup>
+      </TooltipContainer>
     </>
   );
 }

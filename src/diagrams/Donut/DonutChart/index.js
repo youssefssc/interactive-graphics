@@ -31,8 +31,9 @@ function DonutChart({ width, height, data }) {
       .append('svg')
       .attr('width', '100%')
       .attr('height', '100%')
-      .attr('viewBox', '0 0 ' + width + ' ' + width)
-      .attr('preserveAspectRatio', 'xMinYMin')
+      .attr('viewBox', [0, 0, width, height])
+      //   .attr('viewBox', '0 0 ' + width + ' ' + height)
+      //   .attr('preserveAspectRatio', 'xMinYMin')
       .append('g')
       .attr('transform', `translate(${center}, ${center})`);
 
