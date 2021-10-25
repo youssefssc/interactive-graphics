@@ -70,11 +70,23 @@ function DoubleDonut() {
     if (i === datas.length) i = 0;
   };
 
+  const handleSelectArc = (selected) => {
+    console.log(
+      'Filtering :',
+      selected.map((arc) => arc.level + arc.grade + ' '),
+    );
+  };
+
   return (
     <div className="diagram-container">
       <h3>Double Donut with D3 </h3>
       <button onClick={changeData}>Change Data</button>
-      <DoubleDonutChart width={600} height={600} data={data} />
+      <DoubleDonutChart
+        width={600}
+        height={600}
+        data={data}
+        onSelectArc={handleSelectArc}
+      />
     </div>
   );
 }

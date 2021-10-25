@@ -59,7 +59,7 @@ const TooltipPopup = styled.div`
   }
 `;
 
-function DoubleDonutChart({ width, height, data }) {
+function DoubleDonutChart({ width, height, data, onSelectArc }) {
   const ref = useRef();
   const [selected, setSelected] = useState([]);
   const [hovered, setHovered] = useState({ grade: 'A', level: 0, value: 0 });
@@ -179,7 +179,7 @@ function DoubleDonutChart({ width, height, data }) {
 
         const tooltipX = x + width / 2 + 2 * LEGEND_FONT_SIZE;
         const tooltipY = y + height / 2 - 3 * LEGEND_FONT_SIZE;
-        console.log(tooltipX, ' + ', tooltipY);
+        // console.log(tooltipX, ' + ', tooltipY);
         tooltipDiv.style('left', tooltipX + 'px').style('top', tooltipY + 'px');
         tooltipDiv.transition().duration(200).style('opacity', 1);
       }
@@ -198,8 +198,6 @@ function DoubleDonutChart({ width, height, data }) {
     }
 
     function handleOnClickArc(d, i) {
-      // d3.selectAll('.arc-level-1').attr('d', arcs[0]);
-      // d3.selectAll('.arc-level-2').attr('d', arcs[1]);
       if (activeLevel === i.data.level) {
         d3.select(this).attr('d', arcsActive[i.data.level - 1]);
         const isArcSelected = selectedArcs.find(
@@ -216,6 +214,7 @@ function DoubleDonutChart({ width, height, data }) {
             { grade: i.data.grade, level: i.data.level },
           ];
           setSelected(selectedArcs);
+          onSelectArc(selectedArcs);
         }
       }
     }
@@ -266,6 +265,7 @@ function DoubleDonutChart({ width, height, data }) {
           onClick={() => {
             setSelected([]);
             setActiveLevel(1);
+            onSelectArc([{ level: 1, grade: ' ALL' }]);
           }}
         >
           &nbsp; 3rd Party &nbsp;
@@ -275,6 +275,7 @@ function DoubleDonutChart({ width, height, data }) {
           onClick={() => {
             setSelected([]);
             setActiveLevel(2);
+            onSelectArc([{ level: 2, grade: ' ALL' }]);
           }}
         >
           &nbsp; 4th Party &nbsp;
