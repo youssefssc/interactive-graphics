@@ -8,7 +8,8 @@
 
 nav {
   padding: 1rem;
-  margin: 1rem 2rem 4rem 2rem;
+  margin: 2rem;
+  margin-top: 1rem;
   border-bottom: 1px solid #222;
 }
 
@@ -30,20 +31,23 @@ section {
   }
 }
 
-.diagram-container{
-  margin: 2rem 4rem ;
+.diagram-container {
+  margin: 1rem 3rem;
   h2 {
     margin: 2rem 0;
   }
+  h3 {
+    margin: 1rem 0;
+  }
 }
 
-button{
+button {
   background-color: #fff;
   border: 1px solid #222;
   color: #222;
   padding: 0.5rem 1.5rem;
   margin-bottom: 1rem;
-  &:hover{
+  &:hover {
     color: #fff;
     background-color: #222;
   }
