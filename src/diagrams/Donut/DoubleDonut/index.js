@@ -74,7 +74,7 @@ function DoubleDonut() {
     <div className="diagram-container">
       <h3>Double Donut with D3 </h3>
       <button onClick={changeData}>Change Data</button>
-      <DoubleDonutChart width={400} height={400} data={data} />
+      <DoubleDonutChart width={600} height={600} data={data} />
     </div>
   );
 }

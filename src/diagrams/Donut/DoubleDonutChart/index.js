@@ -5,7 +5,6 @@ import {
   Text,
   Inline,
   Button,
-  pxToRem,
 } from '@securityscorecard/design-system';
 import styled from 'styled-components';
 
@@ -25,41 +24,38 @@ const CORNER_RADIUS = 0.5;
 const PAD_ANGLE = 0.007;
 const ARC_EXPAND = 2;
 const ANIMATION_TIME = 500;
+const LEGEND_FONT_SIZE = 12;
+
+const ChartContainer = styled.div`
+  position: relative;
+`;
 
 const TooltipContainer = styled.div`
   position: absolute;
   pointer-events: none;
   opacity: 0;
+  z-index: 99;
+  top: 0;
+  left: 0;
 `;
 
 const TooltipPopup = styled.div`
   width: 120px;
-  height: 50px;
+  height: 60px;
   padding: 16px;
   background: #fff;
   filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.25));
 
-  // transform: translateY(50%);
-  &::before {
+  &::after {
     content: '';
     position: absolute;
-    top: 0px;
-    left: -0.5rem;
-    width: 0.5rem;
-    height: 100%;
-  }
-
-  &::after {
-    transform: translateY(-50%);
+    width: 0px;
+    height: 0px;
     top: 50%;
     left: -5px;
     border-width: 5px 5px 5px 0px;
     border-color: transparent rgb(255, 255, 255) transparent transparent;
     border-style: solid;
-    content: '';
-    position: absolute;
-    width: 0px;
-    height: 0px;
   }
 `;
 
@@ -72,9 +68,7 @@ function DoubleDonutChart({ width, height, data }) {
   const dataLevel1 = data.filter((entry) => entry.level === 1);
   const dataLevel2 = data.filter((entry) => entry.level === 2);
 
-  const margin = 15;
-  // const center = Math.min(width, height) / 2;
-  const radius = Math.min(width, height) / 2 - margin;
+  const radius = height / 2;
 
   const innerR1 = 0.5 * radius;
   const outerR1 = 0.7 * radius;
@@ -106,10 +100,10 @@ function DoubleDonutChart({ width, height, data }) {
     // Create SVG
     const svg = svgContainer
       .append('svg')
-      .attr('width', '100%')
-      .attr('height', '100%')
+      .attr('width', `${width}px`)
+      .attr('height', `${height}px`)
       .attr('viewBox', [0, 0, width, height])
-      // .attr('preserveAspectRatio', 'xMinYMin')
+      .attr('preserveAspectRatio', 'xMinYMin')
       .append('g')
       .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
@@ -166,8 +160,6 @@ function DoubleDonutChart({ width, height, data }) {
 
     // Define the div for the tooltip
     const tooltipDiv = d3.select('.tooltip-container');
-    const tooltipHover = svgContainer.select('.tooltip-hover');
-
     setSelected([]);
     let selectedArcs = selected;
 
@@ -185,9 +177,9 @@ function DoubleDonutChart({ width, height, data }) {
 
         const [x, y] = currentArcActive.centroid(i);
 
-        const tooltipX = width + x - 100;
-        const tooltipY = height + y + 100;
-        // console.log(tooltipX);
+        const tooltipX = x + width / 2 + 2 * LEGEND_FONT_SIZE;
+        const tooltipY = y + height / 2 - 3 * LEGEND_FONT_SIZE;
+        console.log(tooltipX, ' + ', tooltipY);
         tooltipDiv.style('left', tooltipX + 'px').style('top', tooltipY + 'px');
         tooltipDiv.transition().duration(200).style('opacity', 1);
       }
@@ -232,35 +224,29 @@ function DoubleDonutChart({ width, height, data }) {
 
     arcs1
       .append('g')
-      .attr('transform', (d) => {
-        const [x, y] = arcs[0].centroid(d);
-        return `translate(${x}, ${y})`;
-      })
+      .attr('transform', (d) => `translate(${arcs[0].centroid(d)})`)
       .append('text')
       .text((d) => (d.data.percent > 5 ? d.data.percent + '%' : ''))
-      .attr('y', 6)
+      .attr('y', LEGEND_FONT_SIZE / 2)
       .style('fill', '#fff')
       .style('text-anchor', 'middle')
       .style('font-size', 0)
       .transition()
       .duration(700)
-      .style('font-size', '8px');
+      .style('font-size', `${LEGEND_FONT_SIZE}px`);
 
     arcs2
       .append('g')
-      .attr('transform', (d) => {
-        const [x, y] = arcs[1].centroid(d);
-        return `translate(${x}, ${y})`;
-      })
+      .attr('transform', (d) => `translate(${arcs[1].centroid(d)})`)
       .append('text')
       .text((d) => (d.data.percent > 5 ? d.data.percent + '%' : ''))
-      .attr('y', 6)
+      .attr('y', LEGEND_FONT_SIZE / 2)
       .style('fill', '#fff')
       .style('text-anchor', 'middle')
       .style('font-size', 0)
       .transition()
       .duration(700)
-      .style('font-size', '8px');
+      .style('font-size', `${LEGEND_FONT_SIZE}px`);
   }, [data, height, activeLevel]);
 
   useEffect(() => {
@@ -274,7 +260,7 @@ function DoubleDonutChart({ width, height, data }) {
 
   return (
     <>
-      <Inline gap="md">
+      <Inline gap="lg">
         <Button
           variant="text"
           onClick={() => {
@@ -298,18 +284,23 @@ function DoubleDonutChart({ width, height, data }) {
           <b>{selected.map((arc) => arc.level + arc.grade + ' ')}</b>
         </p>
       </Inline>
-
-      <div ref={ref}></div>
-      <TooltipContainer className="tooltip-container">
-        <TooltipPopup>
-          <>
-            <HexGrade grade={hovered.grade || null} variant="solid" size={24} />
-            <Paragraph size="md" isBold margin={{ vertical: 0.5 }}>
-              <Text isBold> {hovered.value} Companies </Text>
-            </Paragraph>
-          </>
-        </TooltipPopup>
-      </TooltipContainer>
+      <ChartContainer>
+        <div ref={ref}></div>
+        <TooltipContainer className="tooltip-container">
+          <TooltipPopup>
+            <>
+              <HexGrade
+                grade={hovered.grade || null}
+                variant="solid"
+                size={24}
+              />
+              <Paragraph size="md" isBold margin={{ vertical: 0.5 }}>
+                <Text isBold> {hovered.value} Companies </Text>
+              </Paragraph>
+            </>
+          </TooltipPopup>
+        </TooltipContainer>
+      </ChartContainer>
     </>
   );
 }
