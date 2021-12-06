@@ -10,6 +10,7 @@ import Donut from './diagrams/Donut';
 import DoubleDonut from './diagrams/Donut/DoubleDonut';
 import BarChartD3 from './diagrams/BarChartD3';
 import Contour from './diagrams/Contour';
+import Links from './diagrams/Links';
 
 import './App.scss';
 
@@ -62,6 +63,12 @@ const App = () => {
             <>
               <Nav />
               <Contour />
+            </>
+          </Route>
+          <Route path="/links">
+            <>
+              <Nav />
+              <Links />
             </>
           </Route>
         </Switch>
