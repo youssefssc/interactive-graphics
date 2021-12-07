@@ -13,6 +13,9 @@ const Home = () => {
           <Link to="/donut">Double Half Donuts</Link>
         </li>
         <li>
+          <Link to="/links">Links</Link>
+        </li>
+        <li>
           <Link to="/connections">Connections Sizes</Link>
         </li>
 
