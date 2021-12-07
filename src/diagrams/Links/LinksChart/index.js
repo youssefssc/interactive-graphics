@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import * as d3 from 'd3';
 import { HexGrade, getColor, pxToRem } from '@securityscorecard/design-system';
 import styled from 'styled-components';
@@ -18,22 +18,22 @@ const CompanyLink = styled.div`
   text-align: center;
   left: ${({ x }) => pxToRem(x)};
   top: ${({ y }) => pxToRem(y)};
-  animation:1s ease 0s normal forwards fadein;
-  -webkit-animation:1s ease 0s normal forwards fadein;
-  opacity:1;
-  }
+    animation:1s ease 0s normal forwards fadein;
+    -webkit-animation:1s ease 0s normal forwards fadein;
+    opacity:1;
+    }
 
-  @keyframes fadein{
-      0%{opacity:0}
-      50%{opacity:0.5}
-      100%{opacity:1}
-  }
+    @keyframes fadein{
+        0%{opacity:0}
+        50%{opacity:0.5}
+        100%{opacity:1}
+    }
 
-  @-webkit-keyframes fadein{
-      0%{opacity:0}
-      50%{opacity:0.5}
-      100%{opacity:1}
-}
+    @-webkit-keyframes fadein{
+        0%{opacity:0}
+        50%{opacity:0.5}
+        100%{opacity:1}
+  }
 `;
 
 function mapRange(value, low1, high1, low2, high2) {
@@ -56,26 +56,21 @@ const calcHeights = (data, height) => {
 };
 
 const prepData = (heights, height, width) => {
-  const parsed = [];
-  heights.forEach((y) => {
-    parsed.push(
-      {
-        source: [0, height / 2],
-        target: [width / 3, y],
-      },
-      {
-        source: [(2 * width) / 3, y],
-        target: [width, height / 2],
-      },
-    );
-    return y;
-  });
-  return parsed;
+  return heights.flatMap((y) => [
+    {
+      source: [0, height / 2],
+      target: [width / 3, y],
+    },
+    {
+      source: [(2 * width) / 3, y],
+      target: [width, height / 2],
+    },
+  ]);
 };
 
 function LinksChart({ width, height, data }) {
-  const heights = calcHeights(data, height);
   const ref = useRef();
+  const heights = useMemo(() => calcHeights(data, height), [data, height]);
 
   const draw = useCallback(() => {
     const svgContainer = d3.select(ref.current);
