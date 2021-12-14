@@ -10,7 +10,7 @@ const Home = () => {
           <Link to="/donut">Half Donut</Link>
         </li>
         <li>
-          <Link to="/donut">Double Half Donuts</Link>
+          <Link to="/2donut">Double Half Donuts</Link>
         </li>
         <li>
           <Link to="/connections">Connections Sizes</Link>
