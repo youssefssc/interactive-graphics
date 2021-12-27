@@ -8,7 +8,13 @@ import {
 } from '@securityscorecard/design-system';
 import styled from 'styled-components';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 
 const colors = {
   A: '#4aba00',
@@ -97,23 +103,25 @@ const processPieData = (raw, filters) => {
         }
       : {};
   });
-
-  return [...level1, ...level2];
+  console.log([[...level1], [...level2]]);
+  return [[...level1], [...level2]];
 };
 
 function DoubleDonutChart({ width, height, data, filters, onSelectArc }) {
   const ref = useRef(null);
   const [selected, setSelected] = useState([]);
   const [hovered, setHovered] = useState({ grade: 'A', level: 0, value: 0 });
-  const [activeLevel, setActiveLevel] = useState(1);
+  const activeLevel = useMemo(
+    () => filters.find(({ field }) => field === 'proximity').value,
+    [filters],
+  );
 
-  const [dataLevel1, setDataLevel1] = useState(
-    processPieData(data, filters).filter((entry) => entry.level === 1),
+  const pieData = useMemo(() => processPieData(data, filters), [data, filters]);
+
+  const dataLevel2 = useMemo(
+    () => processPieData(data, filters).filter((entry) => entry.level === 2),
+    [data, filters],
   );
-  const [dataLevel2, setDataLevel2] = useState(
-    processPieData(data, filters).filter((entry) => entry.level === 2),
-  );
-  // const dataLevel2 = data.filter((entry) => entry.level === 2);
 
   const radius = height / 2;
 
@@ -146,11 +154,11 @@ function DoubleDonutChart({ width, height, data, filters, onSelectArc }) {
     .sort(null);
 
   const svg = d3.select(ref.current);
-  svg
-    .attr('width', `${width}px`)
-    .attr('height', `${height}px`)
-    .attr('viewBox', [0, 0, width, height])
-    .attr('preserveAspectRatio', 'xMinYMin');
+  // svg
+  //   .attr('width', `${width}px`)
+  //   .attr('height', `${height}px`)
+  //   .attr('viewBox', [0, 0, width, height])
+  //   .attr('preserveAspectRatio', 'xMinYMin');
 
   const draw = () => {
     // Donut
@@ -158,7 +166,7 @@ function DoubleDonutChart({ width, height, data, filters, onSelectArc }) {
       .select(ref.current)
       .select('g')
       .selectAll('path.level-1')
-      .data(pieGenerator(dataLevel1));
+      .data(pieGenerator(pieData[0]));
 
     arcs1
       .enter()
@@ -184,12 +192,31 @@ function DoubleDonutChart({ width, height, data, filters, onSelectArc }) {
         };
       });
 
+    //  arcs1 = svg.selectAll().data(pieGenerator(dataLevel1)).enter();
+
+    d3.select(ref.current)
+      .select('g')
+      .selectAll()
+      .data(pieGenerator(pieData[0]))
+      .enter()
+      .append('g')
+      .attr('transform', (d) => `translate(${arcs[0].centroid(d)})`)
+      .append('text')
+      .text((d) => (d.data.percent > 5 ? d.data.percent + '%' : ''))
+      .attr('y', LEGEND_FONT_SIZE / 2)
+      .style('fill', '#fff')
+      .style('text-anchor', 'middle')
+      .style('font-size', 0)
+      .transition()
+      .duration(700)
+      .style('font-size', `${LEGEND_FONT_SIZE}px`);
+
     // Donut level 2
     const arcs2 = d3
       .select(ref.current)
       .select('g')
       .selectAll('path.level-2')
-      .data(pieGenerator(dataLevel2));
+      .data(pieGenerator(pieData[1]));
 
     arcs2
       .enter()
@@ -278,20 +305,6 @@ function DoubleDonutChart({ width, height, data, filters, onSelectArc }) {
 
     // Labels;
 
-    arcs1
-      .enter()
-      .append('g')
-      .attr('transform', (d) => `translate(${arcs[0].centroid(d)})`)
-      .append('text')
-      .text((d) => (d.data.percent > 5 ? d.data.percent + '%' : ''))
-      .attr('y', LEGEND_FONT_SIZE / 2)
-      .style('fill', '#fff')
-      .style('text-anchor', 'middle')
-      .style('font-size', 0)
-      .transition()
-      .duration(700)
-      .style('font-size', `${LEGEND_FONT_SIZE}px`);
-
     // arcs2
     //   .enter()
     //   .append('g')
@@ -309,19 +322,6 @@ function DoubleDonutChart({ width, height, data, filters, onSelectArc }) {
   // , [data, height, activeLevel]);
 
   useEffect(() => {
-    const svg = d3.select(ref.current);
-    svg.attr('width', width).attr('height', height);
-  }, [width, height]);
-
-  // useEffect(() => {
-  //   draw();
-  // }, [data, draw]);
-
-  useEffect(() => {
-    setActiveLevel(filters.find(({ field }) => field === 'proximity')?.value);
-    setDataLevel1(
-      processPieData(data, filters).filter((entry) => entry.level === 1),
-    );
     draw();
   }, [data, filters]);
 
@@ -332,7 +332,7 @@ function DoubleDonutChart({ width, height, data, filters, onSelectArc }) {
           variant="text"
           onClick={() => {
             setSelected([]);
-            setActiveLevel(1);
+            // setActiveLevel(1);
             onSelectArc([{ level: 1, grade: ' ALL' }]);
           }}
         >
@@ -342,7 +342,7 @@ function DoubleDonutChart({ width, height, data, filters, onSelectArc }) {
           variant="text"
           onClick={() => {
             setSelected([]);
-            setActiveLevel(2);
+            // setActiveLevel(2);
             onSelectArc([{ level: 2, grade: ' ALL' }]);
           }}
         >
@@ -357,10 +357,10 @@ function DoubleDonutChart({ width, height, data, filters, onSelectArc }) {
         <div>
           <svg ref={ref} width={width} height={height}>
             <g transform={`translate(${width / 2}, ${height / 2})`}>
-              {dataLevel1.map((d) => (
+              {pieData[0].map((d) => (
                 <path key={d.grade} className={`grade-${d.grade} level-1`} />
               ))}
-              {dataLevel2.map((d) => (
+              {pieData[1].map((d) => (
                 <path key={d.grade} className={`grade-${d.grade} level-2`} />
               ))}
             </g>
