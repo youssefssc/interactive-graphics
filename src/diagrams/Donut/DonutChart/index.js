@@ -1,5 +1,4 @@
 import * as d3 from 'd3';
-import { getColor } from '@securityscorecard/design-system';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
@@ -127,12 +126,12 @@ function DonutChart({ width, height, data }) {
       .transition()
       .duration(700)
       .style('font-size', '10px');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, height]);
 
   useEffect(() => {
     const svg = d3.select(ref.current);
     svg.attr('width', width).attr('height', height);
-    // .style("border", "1px solid black")
   }, [width, height]);
 
   useEffect(() => {
