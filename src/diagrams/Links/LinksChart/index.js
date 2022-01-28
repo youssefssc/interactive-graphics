@@ -72,45 +72,32 @@ function LinksChart({ width, height, data }) {
   const ref = useRef();
   const heights = useMemo(() => calcHeights(data, height), [data, height]);
 
+  const linkGenerator = d3
+    .linkHorizontal()
+    .source((d) => [d.source[0], d.source[1]])
+    .target((d) => [d.target[0], d.target[1]]);
+
   const draw = useCallback(() => {
-    const svgContainer = d3.select(ref.current);
+    const svg = d3.select(ref.current);
+    svg.selectAll('path').remove();
 
-    svgContainer.select('svg').transition().duration(300).remove();
-    // Create SVG
-    const svg = svgContainer
-      .append('svg')
-      .attr('width', '100%')
-      .attr('height', '100%')
-      .attr('viewBox', [0, 0, width, height])
-      .append('g');
+    const linksData = prepData(heights, height, width);
 
-    const dataReady = prepData(heights, height, width);
-
-    // Horizontal link generator
-    var link = d3
-      .linkHorizontal()
-      .source(function (d) {
-        return [d.source[0], d.source[1]];
-      })
-      .target(function (d) {
-        return [d.target[0], d.target[1]];
-      });
-
-    // Adding the link paths
-    const links = svg.selectAll().data(dataReady).enter();
-
+    // Add the link paths
+    const links = svg.selectAll().data(linksData);
     links
+      .enter()
       .append('path')
-      .attr('d', link)
+      .merge(links)
+      .attr('d', linkGenerator)
       .attr('fill', 'none')
-      .attr('stroke', 'black')
-      .attr('stroke-width', 0.25)
-      .classed('link', true)
+      .attr('stroke', '#D1D1D1')
+      .attr('stroke-width', 0.8)
       .style('opacity', 0)
       .transition()
       .duration(1000)
       .style('opacity', 1);
-  }, [height, heights, width]);
+  }, [height, heights, linkGenerator, width]);
 
   useEffect(() => {
     const svg = d3.select(ref.current);
@@ -123,7 +110,7 @@ function LinksChart({ width, height, data }) {
 
   return (
     <ChartContainer>
-      <div ref={ref}></div>
+      <svg ref={ref} width={width} height={height}></svg>
       {data.map((link, i) => (
         <CompanyLink key={i} x={width / 3} y={heights[i] - 14}>
           <HexGrade grade={link.score.grade} variant="solid" size={18} />{' '}
