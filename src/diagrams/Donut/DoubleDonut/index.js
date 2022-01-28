@@ -99,33 +99,6 @@ const riskData = {
   ],
 };
 
-const datas = [
-  [
-    { level: 1, grade: 'A', value: 5, percent: 10 },
-    { level: 1, grade: 'B', value: 9, percent: 20 },
-    { level: 1, grade: 'C', value: 3, percent: 7 },
-    { level: 1, grade: 'D', value: 4, percent: 8 },
-    { level: 1, grade: 'F', value: 2, percent: 6 },
-    { level: 2, grade: 'A', value: 20, percent: 2 },
-    { level: 2, grade: 'B', value: 139, percent: 21 },
-    { level: 2, grade: 'C', value: 133, percent: 20 },
-    { level: 2, grade: 'D', value: 124, percent: 18 },
-    { level: 2, grade: 'F', value: 170, percent: 24 },
-  ],
-  [
-    { level: 1, grade: 'A', value: 15, percent: 40 },
-    { level: 1, grade: 'B', value: 9, percent: 24 },
-    { level: 1, grade: 'C', value: 3, percent: 8 },
-    { level: 1, grade: 'D', value: 4, percent: 12 },
-    { level: 1, grade: 'F', value: 2, percent: 6 },
-    { level: 2, grade: 'A', value: 250, percent: 39 },
-    { level: 2, grade: 'B', value: 139, percent: 23 },
-    { level: 2, grade: 'C', value: 133, percent: 21 },
-    { level: 2, grade: 'D', value: 124, percent: 20 },
-    { level: 2, grade: 'F', value: 170, percent: 10 },
-  ],
-];
-
 const riskFilters = [
   [
     {
@@ -172,7 +145,6 @@ const riskFilters = [
 var i = 0;
 
 function DoubleDonut() {
-  // const [data, setData] = useState(datas[0]);
   const [filters, setFilters] = useState(riskFilters[0]);
 
   useEffect(() => {
@@ -180,17 +152,15 @@ function DoubleDonut() {
   }, []);
 
   const changeData = () => {
-    // setData(datas[i++]);
-    // if (i === datas.length) i = 0;
     setFilters(riskFilters[i++]);
     if (i === riskFilters.length) i = 0;
   };
 
-  const handleSelectArc = (selected) => {
-    console.log(
-      'Filtering :',
-      selected.map((arc) => arc.level + arc.grade + ' '),
-    );
+  const handleSelectArc = ({ proximity, grades }) => {
+    setFilters([
+      { field: 'proximity', value: proximity },
+      { field: 'grade', value: grades ?? null },
+    ]);
   };
 
   return (
