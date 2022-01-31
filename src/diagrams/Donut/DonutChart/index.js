@@ -1,5 +1,4 @@
 import * as d3 from 'd3';
-import { getColor } from '@securityscorecard/design-system';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
@@ -18,9 +17,6 @@ function DonutChart({ width, height, data }) {
   const draw = useCallback(() => {
     const svgContainer = d3.select(ref.current);
 
-    // const svgContainer = d3.select(ref.current).node();
-    // const width = svgContainer.getBoundingClientRect().width;
-    // const height = width;
     const margin = 15;
     const center = Math.min(width, height) / 2;
     const radius = center - margin;
@@ -32,8 +28,6 @@ function DonutChart({ width, height, data }) {
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('viewBox', [0, 0, width, height])
-      //   .attr('viewBox', '0 0 ' + width + ' ' + height)
-      //   .attr('preserveAspectRatio', 'xMinYMin')
       .append('g')
       .attr('transform', `translate(${center}, ${center})`);
 
@@ -127,12 +121,12 @@ function DonutChart({ width, height, data }) {
       .transition()
       .duration(700)
       .style('font-size', '10px');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, height]);
 
   useEffect(() => {
     const svg = d3.select(ref.current);
     svg.attr('width', width).attr('height', height);
-    // .style("border", "1px solid black")
   }, [width, height]);
 
   useEffect(() => {

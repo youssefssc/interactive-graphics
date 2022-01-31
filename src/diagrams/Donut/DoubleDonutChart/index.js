@@ -35,11 +35,8 @@ const UPDATE_ANIMATION_TIME = 200;
 const OPACITY_INACTIVE_ARC = 0.3;
 const LEGEND_FONT_SIZE = 12;
 
-const RADIUS = 285;
-
 const ChartContainer = styled.div`
   position: relative;
-  // margin: 300px;
 `;
 
 const TooltipContainer = styled.div`
