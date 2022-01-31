@@ -17,9 +17,6 @@ function DonutChart({ width, height, data }) {
   const draw = useCallback(() => {
     const svgContainer = d3.select(ref.current);
 
-    // const svgContainer = d3.select(ref.current).node();
-    // const width = svgContainer.getBoundingClientRect().width;
-    // const height = width;
     const margin = 15;
     const center = Math.min(width, height) / 2;
     const radius = center - margin;
@@ -31,8 +28,6 @@ function DonutChart({ width, height, data }) {
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('viewBox', [0, 0, width, height])
-      //   .attr('viewBox', '0 0 ' + width + ' ' + height)
-      //   .attr('preserveAspectRatio', 'xMinYMin')
       .append('g')
       .attr('transform', `translate(${center}, ${center})`);
 

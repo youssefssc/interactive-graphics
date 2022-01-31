@@ -14,20 +14,22 @@ nav {
 }
 
 h2 {
-  margin: 3rem 1rem;
+  margin: 2rem 0;
 }
 
-a {
-  margin: 0.5rem;
-  color: #222;
-  text-decoration: none;
-}
-a:hover {
-  font-weight: 600;
+p {
+  line-height: 1.5rem;
 }
 section {
+  margin: 3rem;
+  ul {
+    margin-top: 2rem;
+  }
   ul li {
     margin-bottom: 1rem;
+  }
+  p {
+    line-height: 1.5rem;
   }
 }
 
